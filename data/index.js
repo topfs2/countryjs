@@ -11,15 +11,15 @@
 // DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
 // ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-var requireAll = require('require-all')
 var _ = require('lodash')
+var fs = require('fs')
 
 module.exports = function () {
-  var fileData = requireAll({
-    dirname: __dirname,
-    filter: /.+\.json$/
-  })
-  return _.values(fileData).map(function (file) {
+  var files = fs.readdirSync(__dirname)
+  var jsons = _.filter(files, function (file) { return file.slice(-5) === '.json' })
+  var values = _.map(jsons, function (country) { return require('./' + country) })
+
+  return values.map(function (file) {
     file.ISO[2] = file.ISO.alpha2
     file.ISO[3] = file.ISO.alpha3
     return file
